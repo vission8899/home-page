@@ -314,6 +314,7 @@ body {
     gap: 8px;
     opacity: 0;
     animation: fadeInUp 0.6s ease 1.2s forwards;
+    transition: opacity 0.3s ease;
 }
 
 .mouse {

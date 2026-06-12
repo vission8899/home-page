@@ -158,12 +158,15 @@ function initNavbar() {
     const navbar = document.getElementById('navbar');
     const sections = document.querySelectorAll('.section');
     const navLinks = document.querySelectorAll('.nav-link');
+    const scrollIndicator = document.querySelector('.scroll-indicator');
 
     window.addEventListener('scroll', () => {
         if (window.scrollY > 50) {
             navbar.classList.add('scrolled');
+            if (scrollIndicator) scrollIndicator.style.opacity = '0';
         } else {
             navbar.classList.remove('scrolled');
+            if (scrollIndicator) scrollIndicator.style.opacity = '1';
         }
 
         let current = '';
