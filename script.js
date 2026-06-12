@@ -314,14 +314,14 @@ function initHeartBurst() {
             this.x = x;
             this.y = y;
             const angle = Math.random() * Math.PI * 2;
-            const speed = Math.random() * 6 + 3;
+            const speed = Math.random() * 8 + 4;
             this.vx = Math.cos(angle) * speed;
             this.vy = Math.sin(angle) * speed - 2;
             this.gravity = 0.1;
             this.friction = 0.99;
             this.life = 1;
-            this.decay = Math.random() * 0.02 + 0.01;
-            this.size = Math.random() * 12 + 8;
+            this.decay = Math.random() * 0.01 + 0.005;
+            this.size = Math.random() * 18 + 10;
             this.rotation = Math.random() * Math.PI * 2;
             this.rotationSpeed = (Math.random() - 0.5) * 0.2;
             const colors = ['#ea80b0', '#ff6b9d', '#ff8fab', '#ffb3c1', '#ff69b4'];
@@ -348,7 +348,7 @@ function initHeartBurst() {
     }
 
     document.addEventListener('click', (e) => {
-        for (let i = 0; i < 8; i++) {
+        for (let i = 0; i < 20; i++) {
             hearts.push(new HeartParticle(e.clientX, e.clientY));
         }
     });
