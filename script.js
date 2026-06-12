@@ -1,4 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('year').textContent = new Date().getFullYear();
     initParticles();
     initTyping();
     initScrollAnimations();
@@ -258,7 +259,7 @@ function handleSubmit(e) {
     e.preventDefault();
     const btn = e.target.querySelector('button');
     const originalText = btn.innerHTML;
-    btn.innerHTML = '<span>Message Sent! ✓</span>';
+    btn.innerHTML = '<span>发送成功！✓</span>';
     btn.style.background = 'linear-gradient(135deg, #00b894 0%, #00cec9 100%)';
 
     setTimeout(() => {
