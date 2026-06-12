@@ -259,20 +259,6 @@ function initSmoothScroll() {
     });
 }
 
-function handleSubmit(e) {
-    e.preventDefault();
-    const btn = e.target.querySelector('button');
-    const originalText = btn.innerHTML;
-    btn.innerHTML = '<span>发送成功！✓</span>';
-    btn.style.background = 'linear-gradient(135deg, #00b894 0%, #00cec9 100%)';
-
-    setTimeout(() => {
-        btn.innerHTML = originalText;
-        btn.style.background = '';
-        e.target.reset();
-    }, 3000);
-}
-
 function initHeartBurst() {
     const canvas = document.createElement('canvas');
     canvas.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:9999;';
