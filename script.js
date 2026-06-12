@@ -8,6 +8,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initCountUp();
     initSkillBars();
     initSmoothScroll();
+    initHeartBurst();
 });
 
 function initParticles() {
@@ -267,4 +268,109 @@ function handleSubmit(e) {
         btn.style.background = '';
         e.target.reset();
     }, 3000);
+}
+
+function initHeartBurst() {
+    const canvas = document.createElement('canvas');
+    canvas.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:9999;';
+    document.body.appendChild(canvas);
+    const ctx = canvas.getContext('2d');
+    let hearts = [];
+
+    function resize() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+    }
+    resize();
+    window.addEventListener('resize', resize);
+
+    function pointOnHeart(t) {
+        return {
+            x: 16 * Math.pow(Math.sin(t), 3),
+            y: -(13 * Math.cos(t) - 5 * Math.cos(2 * t) - 2 * Math.cos(3 * t) - Math.cos(4 * t))
+        };
+    }
+
+    function createHeartImage(size, color) {
+        const c = document.createElement('canvas');
+        c.width = size;
+        c.height = size;
+        const ctx = c.getContext('2d');
+        ctx.beginPath();
+        const scale = size / 35;
+        for (let t = -Math.PI; t < Math.PI; t += 0.1) {
+            const p = pointOnHeart(t);
+            if (t === -Math.PI) ctx.moveTo(size / 2 + p.x * scale, size / 2 + p.y * scale);
+            else ctx.lineTo(size / 2 + p.x * scale, size / 2 + p.y * scale);
+        }
+        ctx.closePath();
+        ctx.fillStyle = color;
+        ctx.fill();
+        return c;
+    }
+
+    class HeartParticle {
+        constructor(x, y) {
+            this.x = x;
+            this.y = y;
+            const angle = Math.random() * Math.PI * 2;
+            const speed = Math.random() * 6 + 3;
+            this.vx = Math.cos(angle) * speed;
+            this.vy = Math.sin(angle) * speed - 2;
+            this.gravity = 0.1;
+            this.friction = 0.99;
+            this.life = 1;
+            this.decay = Math.random() * 0.02 + 0.01;
+            this.size = Math.random() * 12 + 8;
+            this.rotation = Math.random() * Math.PI * 2;
+            this.rotationSpeed = (Math.random() - 0.5) * 0.2;
+            const colors = ['#ea80b0', '#ff6b9d', '#ff8fab', '#ffb3c1', '#ff69b4'];
+            this.image = createHeartImage(this.size, colors[Math.floor(Math.random() * colors.length)]);
+        }
+        update() {
+            this.vx *= this.friction;
+            this.vy *= this.friction;
+            this.vy += this.gravity;
+            this.x += this.vx;
+            this.y += this.vy;
+            this.life -= this.decay;
+            this.rotation += this.rotationSpeed;
+        }
+        draw() {
+            if (this.life <= 0) return;
+            ctx.save();
+            ctx.globalAlpha = this.life;
+            ctx.translate(this.x, this.y);
+            ctx.rotate(this.rotation);
+            ctx.drawImage(this.image, -this.size / 2, -this.size / 2);
+            ctx.restore();
+        }
+    }
+
+    document.addEventListener('click', (e) => {
+        for (let i = 0; i < 8; i++) {
+            hearts.push(new HeartParticle(e.clientX, e.clientY));
+        }
+    });
+
+    document.addEventListener('mousemove', (e) => {
+        if (Math.random() > 0.92) {
+            const h = new HeartParticle(e.clientX, e.clientY);
+            h.size = Math.random() * 6 + 4;
+            h.decay = 0.03;
+            h.image = createHeartImage(h.size, '#ea80b0');
+            hearts.push(h);
+        }
+    });
+
+    function animate() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        hearts = hearts.filter(h => h.life > 0);
+        hearts.forEach(h => {
+            h.update();
+            h.draw();
+        });
+        requestAnimationFrame(animate);
+    }
+    animate();
 }
