@@ -278,11 +278,11 @@ function initHeartBurst() {
 
     var settings = {
         particles: {
-            length: 500,
-            duration: 2,
-            velocity: 100,
-            effect: 0.8,
-            size: 20,
+            length: 800,
+            duration: 3,
+            velocity: 150,
+            effect: 0.75,
+            size: 25,
         },
     };
 
@@ -401,8 +401,8 @@ function initHeartBurst() {
 
     function pointOnHeart(t) {
         return new Point(
-            160 * Math.pow(Math.sin(t), 3),
-            130 * Math.cos(t) - 50 * Math.cos(2 * t) - 20 * Math.cos(3 * t) - 10 * Math.cos(4 * t) + 25
+            180 * Math.pow(Math.sin(t), 3),
+            150 * Math.cos(t) - 60 * Math.cos(2 * t) - 25 * Math.cos(3 * t) - 12 * Math.cos(4 * t) + 30
         );
     }
 
@@ -427,7 +427,7 @@ function initHeartBurst() {
             cx.lineTo(p.x, p.y);
         }
         cx.closePath();
-        cx.fillStyle = "#ea80b0";
+        cx.fillStyle = "#ff4d6d";
         cx.fill();
         var img = new Image();
         img.src = c.toDataURL();
@@ -443,7 +443,17 @@ function initHeartBurst() {
 
         setTimeout(() => {
             pools = pools.filter(p => p.pool !== pool);
-        }, settings.particles.duration * 1000 + 100);
+        }, settings.particles.duration * 1000 + 500);
+    });
+
+    document.addEventListener('mousemove', (e) => {
+        if (Math.random() > 0.95) {
+            var pool = new ParticlePool(50);
+            pools.push({ pool: pool, time: 0, x: e.clientX, y: e.clientY, mini: true });
+            setTimeout(() => {
+                pools = pools.filter(p => p.pool !== pool);
+            }, 1500);
+        }
     });
 
     var time = 0;
@@ -456,10 +466,12 @@ function initHeartBurst() {
 
         pools.forEach(function (item) {
             item.time += deltaTime;
-            var amount = particleRate * deltaTime;
+            var rate = item.mini ? particleRate * 0.3 : particleRate;
+            var amount = rate * deltaTime * 2;
+            var vel = item.mini ? settings.particles.velocity * 0.5 : settings.particles.velocity;
             for (var i = 0; i < amount; i++) {
                 var pos = pointOnHeart(Math.PI - 2 * Math.PI * Math.random());
-                var dir = pos.clone().length(settings.particles.velocity);
+                var dir = pos.clone().length(vel);
                 item.pool.add(
                     item.x + pos.x,
                     item.y - pos.y,
